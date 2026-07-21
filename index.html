@@ -479,6 +479,7 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
   filter:blur(1px);
   box-shadow:0 0 60px var(--glow-a), inset 0 0 40px rgba(255,255,255,0.25);
   animation:floatY 7s ease-in-out infinite;
+  will-change:transform;
 }
 .orb.o1{ width:200px; height:200px; top:6%; left:8%; animation-duration:8s; }
 .orb.o2{ width:130px; height:130px; top:52%; left:0%; animation-duration:6.2s; animation-delay:.6s; opacity:.85; }
@@ -503,6 +504,7 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
   -webkit-backdrop-filter:blur(18px) saturate(160%);
   box-shadow:var(--glass-shadow);
   animation:floatCard 6s ease-in-out infinite;
+  will-change:transform;
 }
 @keyframes floatCard{
   0%,100%{ transform:translateY(0) rotate(-1.2deg); }
@@ -611,6 +613,16 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
   color:transparent;
   position:relative;
   z-index:2;
+  align-items:center;
+  justify-content:center;
+}
+.about-photo{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:32px;
 }
 .about-chip{
   position:absolute;
@@ -824,6 +836,47 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
   object-fit:cover;
   display:block;
   background:#08132e;
+  transform:scale(1);
+  transition:transform .6s var(--ease);
+  will-change:transform;
+}
+.portfolio-card:hover .portfolio-media video{
+  transform:scale(1.05);
+}
+.portfolio-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(5,12,30,0.05), rgba(5,12,30,0.55));
+  opacity:0;
+  transition:opacity .45s var(--ease);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:2;
+  pointer-events:none;
+}
+.portfolio-card:hover .portfolio-overlay{ opacity:1; }
+.portfolio-play{
+  width:64px; height:64px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.16);
+  border:1px solid rgba(255,255,255,0.4);
+  backdrop-filter:blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 0 0 rgba(99,164,255,0.5);
+  transform:scale(.7);
+  transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+}
+.portfolio-card:hover .portfolio-play{
+  transform:scale(1);
+  box-shadow:0 0 34px 6px rgba(99,164,255,0.65);
+}
+.portfolio-play svg{
+  width:24px; height:24px;
+  fill:#fff;
+  margin-left:3px;
 }
 .portfolio-info{
   padding:1.3rem 1.4rem 1.5rem;
@@ -976,7 +1029,141 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 }
 
 /* ============================================================
-   12. RESPONSIVE
+   12. LOADING SCREEN
+   ============================================================ */
+body.is-loading{ overflow:hidden; }
+.load-screen{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  background:#ffffff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:opacity .8s var(--ease);
+}
+.load-screen.loader-done{
+  opacity:0;
+  pointer-events:none;
+}
+.load-orb{
+  position:absolute;
+  width:220px; height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle, var(--blue-400), var(--blue-600) 70%);
+  filter:blur(30px);
+  opacity:.55;
+  animation:loadOrbPulse 1.8s ease-in-out infinite;
+}
+@keyframes loadOrbPulse{
+  0%,100%{ transform:scale(1); opacity:.4; }
+  50%{ transform:scale(1.25); opacity:.65; }
+}
+.load-logo{
+  position:relative;
+  z-index:2;
+  font-size:2.4rem;
+  font-weight:900;
+  letter-spacing:-.02em;
+  background:linear-gradient(135deg, var(--blue-700), var(--blue-400));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  opacity:0;
+  transform:translateY(24px) scale(.92);
+  animation:loadLogoIn 1.1s var(--ease) forwards .15s;
+}
+@keyframes loadLogoIn{
+  0%{ opacity:0; transform:translateY(24px) scale(.92); }
+  60%{ opacity:1; transform:translateY(-4px) scale(1.03); }
+  100%{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* ============================================================
+   13. CUSTOM CURSOR (desktop only)
+   ============================================================ */
+.has-custom-cursor, .has-custom-cursor a, .has-custom-cursor button{ cursor:none; }
+.custom-cursor-dot, .custom-cursor-ring{
+  position:fixed;
+  top:0; left:0;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:6000;
+  transition:opacity .25s var(--ease);
+}
+.custom-cursor-dot{
+  width:7px; height:7px;
+  margin:-3.5px 0 0 -3.5px;
+  background:var(--blue-600);
+  box-shadow:0 0 10px var(--glow-a);
+}
+.custom-cursor-ring{
+  width:38px; height:38px;
+  margin:-19px 0 0 -19px;
+  border:1.5px solid var(--blue-500);
+  background:rgba(59,130,246,0.06);
+  transition:width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease), opacity .25s var(--ease);
+}
+.custom-cursor-ring.hovering{
+  width:58px; height:58px;
+  margin:-29px 0 0 -29px;
+  background:rgba(59,130,246,0.12);
+  border-color:var(--blue-400);
+}
+@media (pointer:coarse){
+  .custom-cursor-dot, .custom-cursor-ring{ display:none; }
+}
+
+/* ============================================================
+   14. PROJECT ANALYTICS
+   ============================================================ */
+.analytics{
+  background:linear-gradient(180deg, #ffffff, var(--bg-soft));
+}
+.analytics-panel{
+  padding:clamp(1.8rem, 4vw, 3rem);
+  border-radius:var(--radius-lg);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(16px) saturate(160%);
+  box-shadow:var(--glass-shadow);
+}
+.analytics-item{
+  padding:1rem 0;
+  border-bottom:1px solid rgba(20,97,255,0.08);
+}
+.analytics-item:last-child{ border-bottom:none; }
+.analytics-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:.7rem;
+}
+.analytics-top span.label{ font-weight:600; font-size:.98rem; }
+.analytics-count{
+  font-weight:800;
+  font-size:1.05rem;
+  color:var(--blue-600);
+}
+.analytics-track{
+  width:100%;
+  height:14px;
+  border-radius:100px;
+  background:var(--blue-100);
+  overflow:hidden;
+  box-shadow:inset 0 1px 3px rgba(20,97,255,0.15);
+}
+.analytics-fill{
+  height:100%;
+  width:0%;
+  border-radius:100px;
+  background:linear-gradient(90deg, var(--blue-700), var(--blue-400));
+  transition:width 1.6s var(--ease);
+  box-shadow:0 0 16px var(--glow-a);
+}
+
+/* ============================================================
+   17. RESPONSIVE
    ============================================================ */
 @media (max-width:1080px){
   .services-grid{ grid-template-columns:repeat(2, 1fr); }
@@ -1006,7 +1193,15 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 }
 </style>
 </head>
-<body>
+<body class="is-loading">
+
+<!-- ============================================================
+     LOADING SCREEN
+     ============================================================ -->
+<div class="load-screen" id="loadScreen" aria-hidden="true">
+  <div class="load-orb"></div>
+  <div class="load-logo">AM</div>
+</div>
 
 <!-- ============================================================
      NAVIGATION
@@ -1072,7 +1267,7 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
         </div>
 
         <div class="hero-stats" id="heroStats">
-          <div class="hero-stat"><b>5+</b><span>Brand Projects</span></div>
+          <div class="hero-stat"><b>4+</b><span>Brand Projects</span></div>
           <div class="hero-stat"><b>98%</b><span>Alight Motion Mastery</span></div>
           <div class="hero-stat"><b>100%</b><span>Client-Focused Edits</span></div>
         </div>
@@ -1111,7 +1306,9 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 
       <div class="about-visual reveal">
         <div class="about-frame">
-          <span class="about-initials">AM</span>
+          <img src="profile.webp" alt="Ahmad Munawar" class="about-photo"
+               onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <span class="about-initials" style="display:none;">AM</span>
         </div>
         <div class="about-chip"><span class="pulse"></span> Edited in Alight Motion</div>
       </div>
@@ -1243,6 +1440,38 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 </section>
 
 <!-- ============================================================
+     PROJECT ANALYTICS
+     ============================================================ -->
+<section class="section analytics" id="analytics">
+  <div class="container section-inner">
+    <div class="section-head center reveal">
+      <div class="eyebrow" style="justify-content:center;">Project Analytics</div>
+      <h2 class="section-title">Where my project time goes</h2>
+      <p class="section-sub">A breakdown of the work across recent client projects.</p>
+    </div>
+
+    <div class="analytics-panel reveal">
+      <div class="analytics-item" data-percent="38">
+        <div class="analytics-top"><span class="label">Commercial Ads</span><span class="analytics-count">0%</span></div>
+        <div class="analytics-track"><div class="analytics-fill"></div></div>
+      </div>
+      <div class="analytics-item" data-percent="27">
+        <div class="analytics-top"><span class="label">Brand Promotions</span><span class="analytics-count">0%</span></div>
+        <div class="analytics-track"><div class="analytics-fill"></div></div>
+      </div>
+      <div class="analytics-item" data-percent="33">
+        <div class="analytics-top"><span class="label">Motion Graphics</span><span class="analytics-count">0%</span></div>
+        <div class="analytics-track"><div class="analytics-fill"></div></div>
+      </div>
+      <div class="analytics-item" data-percent="24">
+        <div class="analytics-top"><span class="label">Social Media</span><span class="analytics-count">0%</span></div>
+        <div class="analytics-track"><div class="analytics-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      PORTFOLIO
      ============================================================ -->
 <section class="section portfolio" id="portfolio">
@@ -1258,9 +1487,11 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 
       <div class="portfolio-card">
         <div class="portfolio-media">
-          <video controls preload="metadata" playsinline poster="">
-            <source src="kcc2.mp4" type="video/mp4">
+          <video controls preload="none" playsinline poster="" data-src="kcc2.mp4">
           </video>
+          <div class="portfolio-overlay">
+            <div class="portfolio-play"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
+          </div>
         </div>
         <div class="portfolio-info">
           <h3>Khaliqia Cash &amp; Carry</h3>
@@ -1270,9 +1501,11 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 
       <div class="portfolio-card">
         <div class="portfolio-media">
-          <video controls preload="metadata" playsinline poster="">
-            <source src="flafe1.mp4" type="video/mp4">
+          <video controls preload="none" playsinline poster="" data-src="flafe1.mp4">
           </video>
+          <div class="portfolio-overlay">
+            <div class="portfolio-play"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
+          </div>
         </div>
         <div class="portfolio-info">
           <h3>Flafe</h3>
@@ -1282,9 +1515,11 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 
       <div class="portfolio-card">
         <div class="portfolio-media">
-          <video controls preload="metadata" playsinline poster="">
-            <source src="flafe2.mp4" type="video/mp4">
+          <video controls preload="none" playsinline poster="" data-src="flafe2.mp4">
           </video>
+          <div class="portfolio-overlay">
+            <div class="portfolio-play"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
+          </div>
         </div>
         <div class="portfolio-info">
           <h3>Flafe</h3>
@@ -1294,9 +1529,11 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
 
       <div class="portfolio-card">
         <div class="portfolio-media">
-          <video controls preload="metadata" playsinline poster="">
-            <source src="fusion.mp4" type="video/mp4">
+          <video controls preload="none" playsinline poster="" data-src="fusion.mp4">
           </video>
+          <div class="portfolio-overlay">
+            <div class="portfolio-play"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></div>
+          </div>
         </div>
         <div class="portfolio-info">
           <h3>Fusion College</h3>
@@ -1367,7 +1604,6 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
     if (window.scrollY > 40) navbar.classList.add('scrolled');
     else navbar.classList.remove('scrolled');
   };
-  window.addEventListener('scroll', onScrollNav, { passive:true });
   onScrollNav();
 
   /* ---------- 2. Mobile menu toggle ---------- */
@@ -1414,8 +1650,21 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
       link.classList.toggle('active', link.getAttribute('href') === '#' + current);
     });
   };
-  window.addEventListener('scroll', setActiveLink, { passive:true });
   setActiveLink();
+
+  /* single rAF-throttled scroll listener drives both effects — avoids layout
+     thrashing from multiple unthrottled scroll handlers */
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking){
+      requestAnimationFrame(() => {
+        onScrollNav();
+        setActiveLink();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive:true });
 
   /* ---------- 5. Hero entrance animation ---------- */
   const heroEls = [
@@ -1498,21 +1747,132 @@ a:focus-visible, button:focus-visible, .nav-link:focus-visible{
     });
   });
 
-  /* ---------- 10. Video fallback (missing source files) ---------- */
-  document.querySelectorAll('.portfolio-media video').forEach(video => {
-    video.addEventListener('error', showFallback, true);
-    const source = video.querySelector('source');
-    if (source) source.addEventListener('error', () => showFallback({ target: video }));
-    function showFallback(e){
+  /* ---------- 10. Lazy-loaded portfolio videos + fallback ---------- */
+  const lazyVideos = document.querySelectorAll('.portfolio-media video[data-src]');
+  const attachFallback = (video, src) => {
+    video.addEventListener('error', () => {
       const media = video.closest('.portfolio-media');
       if (!media || media.querySelector('.video-fallback')) return;
       video.style.display = 'none';
       const fb = document.createElement('div');
       fb.className = 'video-fallback';
-      fb.textContent = 'Preview unavailable — add ' + (source ? source.getAttribute('src') : 'video file') + ' next to index.html';
+      fb.textContent = 'Preview unavailable — add ' + src + ' next to index.html';
       media.appendChild(fb);
+    }, true);
+  };
+
+  if ('IntersectionObserver' in window){
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          const video = entry.target;
+          const src = video.getAttribute('data-src');
+          if (src){
+            const source = document.createElement('source');
+            source.src = src;
+            source.type = 'video/mp4';
+            video.appendChild(source);
+            attachFallback(video, src);
+            video.load();
+            video.removeAttribute('data-src');
+          }
+          videoObserver.unobserve(video);
+        }
+      });
+    }, { rootMargin:'400px 0px', threshold:0.01 });
+    lazyVideos.forEach(video => videoObserver.observe(video));
+  } else {
+    /* fallback for very old browsers: load immediately */
+    lazyVideos.forEach(video => {
+      const src = video.getAttribute('data-src');
+      const source = document.createElement('source');
+      source.src = src;
+      source.type = 'video/mp4';
+      video.appendChild(source);
+      attachFallback(video, src);
+      video.removeAttribute('data-src');
+    });
+  }
+
+  /* ---------- 11. Project Analytics animated bars ---------- */
+  const analyticsItems = document.querySelectorAll('.analytics-item');
+  const analyticsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        const item = entry.target;
+        const pct = item.getAttribute('data-percent') || 0;
+        const fill = item.querySelector('.analytics-fill');
+        const count = item.querySelector('.analytics-count');
+        requestAnimationFrame(() => { fill.style.width = pct + '%'; });
+        if (count){
+          let cur = 0;
+          const target = parseInt(pct, 10);
+          const step = Math.max(1, Math.round(target / 40));
+          const tick = () => {
+            cur = Math.min(target, cur + step);
+            count.textContent = cur + '%';
+            if (cur < target) requestAnimationFrame(tick);
+          };
+          tick();
+        }
+        analyticsObserver.unobserve(item);
+      }
+    });
+  }, { threshold:0.4 });
+  analyticsItems.forEach(item => analyticsObserver.observe(item));
+
+  /* ---------- 12. Custom glowing cursor (desktop only) ---------- */
+  const isFinePointer = window.matchMedia('(pointer:fine)').matches;
+  if (isFinePointer){
+    const cursorDot = document.createElement('div');
+    const cursorRing = document.createElement('div');
+    cursorDot.className = 'custom-cursor-dot';
+    cursorRing.className = 'custom-cursor-ring';
+    document.body.appendChild(cursorRing);
+    document.body.appendChild(cursorDot);
+    document.body.classList.add('has-custom-cursor');
+
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+    });
+    (function animateRing(){
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+      requestAnimationFrame(animateRing);
+    })();
+
+    document.querySelectorAll('a, button, .service-card, .portfolio-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursorRing.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovering'));
+    });
+
+    document.addEventListener('mouseleave', () => {
+      cursorDot.style.opacity = '0'; cursorRing.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+      cursorDot.style.opacity = '1'; cursorRing.style.opacity = '1';
+    });
+  }
+
+  /* ---------- 13. Premium loading screen ---------- */
+  const loader = document.getElementById('loadScreen');
+  if (loader){
+    const finishLoading = () => {
+      loader.classList.add('loader-done');
+      document.body.classList.remove('is-loading');
+      setTimeout(() => loader.remove(), 900);
+    };
+    if (document.readyState === 'complete'){
+      setTimeout(finishLoading, 2200);
+    } else {
+      window.addEventListener('load', () => setTimeout(finishLoading, 2200));
+      /* safety net in case 'load' is delayed by large video files */
+      setTimeout(finishLoading, 5000);
     }
-  });
+  }
 
 })();
 </script>
